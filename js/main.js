@@ -32,20 +32,6 @@
     gl.enableVertexAttribArray(PositionAttributeLocation);
 	gl.enableVertexAttribArray(UVAttributeLocation);
 
-    //
-    // Textures
-    //
-    var PerlinNoiseTexture = loadTexture(gl, 'images/simplex.png')
-    var WhiteNoiseTexture = loadTexture(gl, 'images/white.png')
-    var BlueNoiseTexture = loadTexture(gl, 'images/blue.png')
-
-    //
-    // Uniforms
-    //
-    var PerlinNoiseUniformLoc = gl.getUniformLocation(shader, "perlinNoiseSampler")
-    var WhiteNoiseUniformLoc = gl.getUniformLocation(shader, "whiteNoiseSampler")
-    var BlueNoiseUniformLoc = gl.getUniformLocation(shader, "blueNoiseSampler")
-
     var MouseUUniformLoc = gl.getUniformLocation(shader, "MouseU")
     var MouseVUniformLoc = gl.getUniformLocation(shader, "MouseV")
 
@@ -81,18 +67,6 @@
         gl.enableVertexAttribArray(UVAttributeLocation);
 
         gl.useProgram(shader);
-
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, PerlinNoiseTexture);
-        gl.uniform1i(PerlinNoiseUniformLoc, 0);
-
-        gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, WhiteNoiseTexture);
-        gl.uniform1i(WhiteNoiseUniformLoc, 1);
-
-        gl.activeTexture(gl.TEXTURE2);
-        gl.bindTexture(gl.TEXTURE_2D, BlueNoiseTexture);
-        gl.uniform1i(BlueNoiseUniformLoc, 2);
 
         gl.uniform1f(MouseUUniformLoc, MouseX)
         gl.uniform1f(MouseVUniformLoc, MouseY)

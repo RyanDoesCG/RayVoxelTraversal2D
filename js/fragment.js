@@ -1,26 +1,15 @@
 var fragSource = `
     precision mediump float;
-
     varying vec2 out_uvs;
-
-    uniform sampler2D perlinNoiseSampler;
-    uniform sampler2D whiteNoiseSampler;
-    uniform sampler2D blueNoiseSampler;
-
     uniform float MouseU;
     uniform float MouseV;
-
     uniform float Width;
     uniform float Height;
-
     uniform float Time;
     uniform float Aspect;
-
     uniform vec2 A;
     uniform vec2 B;
-
     #define GRID_SIZE 24.0
-
     float distancePointToLine(vec2 a, vec2 b, vec2 p)
     {
         // if the length of the line segment is 0, both
@@ -28,9 +17,8 @@ var fragSource = `
         // becomes a point to point distance
         vec2 ab = b - a;
         float length = dot(ab, ab);
-        if (length == 0.0) return distance(p, a);
-
-        //
+        if (length == 0.0) 
+            return distance(p, a);
         float t = max(0.0, min(1.0, dot(p - a, ab) / length));
         vec2  pr = a + t * (ab);
         return distance(p, pr);
@@ -143,14 +131,16 @@ var fragSource = `
             {
                 Grid.x += StepDirection.x;
                 tMaxX += tDeltaX;
-                if (Grid == gridIndex) if (gl_FragColor.w == 0.0) gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+                if (Grid == gridIndex && gl_FragColor.w == 0.0) 
+                        gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
             }
             else
             if (tMaxY < tMaxX)
             {
                 Grid.y += StepDirection.y;
                 tMaxY += tDeltaY;
-                if (Grid == gridIndex) if (gl_FragColor.w == 0.0) gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+                if (Grid == gridIndex && gl_FragColor.w == 0.0) 
+                    gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
             }
 
             if (Grid == GridB)
@@ -170,6 +160,6 @@ var fragSource = `
         float thickness = 0.03;
         float dist = distancePointToLine(RayOrigin + RayDirection * -1000.0, RayOrigin + RayDirection * 1000.0, gridUVs);
         if (dist < thickness) 
-            gl_FragColor = vec4(mix(gl_FragColor.xyz, vec3(1.0), clamp(1.0 - (dist / thickness), 0.0, 1.0)), 1.0);
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
     }
     `;
