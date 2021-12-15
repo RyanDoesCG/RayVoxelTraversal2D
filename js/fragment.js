@@ -72,112 +72,66 @@ var fragSource = `
         ivec2 StepDirection = ivec2(sign(RayDirection));
         float NextXBoundary = float(GridA.x);
         if (StepDirection.x > 0) NextXBoundary += 1.0;
-
-        float tMaxX = 100000.0;
-        if (RayDirection.x > 0.0)
-        {
-            tMaxX = intersectRayPlane(
-                vec3(RayOrigin, 0.0),
-                vec3(RayDirection, 0.0),
-                vec3(NextXBoundary, 0.0, 0.0),
-                vec3(-1.0, 0.0, 0.0)
-            );
-        }
-        if (RayDirection.x < 0.0)
-        {
-            tMaxX = intersectRayPlane(
-                vec3(RayOrigin, 0.0),
-                vec3(RayDirection, 0.0),
-                vec3(NextXBoundary, 0.0, 0.0),
-                vec3(1.0, 0.0, 0.0)
-            );
-        }
-        vec2 maxX = RayOrigin + RayDirection * tMaxX;
-        if (distance(gridUVs, maxX) < 0.1)
-        {
-            gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
-        }
-
+        float tMaxX = intersectRayPlane(
+            vec3(RayOrigin, 0.0),
+            vec3(RayDirection, 0.0),
+            vec3(NextXBoundary, 0.0, 0.0),
+            vec3(-StepDirection.x, 0.0, 0.0));
+    
         float NextYBoundary = float(GridA.y);
         if (StepDirection.y > 0) NextYBoundary += 1.0;
-
-        float tMaxY = 100000.0;
-        if (RayDirection.y > 0.0)
-        {
-            tMaxY = intersectRayPlane(
+        float tMaxY = intersectRayPlane(
                 vec3(RayOrigin, 0.0),
                 vec3(RayDirection, 0.0),
                 vec3(0.0, NextYBoundary, 0.0),
-                vec3(0.0, -1.0, 0.0)
-            );
-        }
-        if (RayDirection.y < 0.0)
-        {
-            tMaxY = intersectRayPlane(
-                vec3(RayOrigin, 0.0),
-                vec3(RayDirection, 0.0),
-                vec3(0.0, NextYBoundary, 0.0),
-                vec3(0.0, 1.0, 0.0)
-            );
-        }
-        vec2 maxY = RayOrigin + RayDirection * tMaxY;
-        if (distance(gridUVs, maxY) < 0.1)
-        {
-            gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);
-        }
+                vec3(0.0, -StepDirection.y, 0.0));
 
         // deltas
         float tDeltaX = 100000.0;
         if (RayDirection.x > 0.0)
-        {
             tDeltaX = intersectRayPlane(
                 vec3(RayOrigin, 0.0),
                 vec3(RayDirection, 0.0),
                 vec3(A.x * GRID_SIZE + 1.0, 0.0, 0.0),
-                vec3(-1.0, 0.0, 0.0)
-            );
-        }
+                vec3(-1.0, 0.0, 0.0));
 
         if (RayDirection.x < 0.0)
-        {
             tDeltaX = intersectRayPlane(
                 vec3(RayOrigin, 0.0),
                 vec3(RayDirection, 0.0),
                 vec3(A.x * GRID_SIZE - 1.0, 0.0, 0.0),
-                vec3(1.0, 0.0, 0.0)
-            );
-        }
-        vec2 deltaX = RayOrigin + RayDirection * tDeltaX;
-        if (distance(gridUVs, deltaX) < 0.1)
-        {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        }
+                vec3(1.0, 0.0, 0.0));
 
         float tDeltaY = 100000.0;
         if (RayDirection.y > 0.0)
-        {
             tDeltaY = intersectRayPlane(
                 vec3(RayOrigin, 0.0),
                 vec3(RayDirection, 0.0),
                 vec3(0.0, A.y * GRID_SIZE + 1.0, 0.0),
-                vec3(0.0, -1.0, 0.0)
-            );
-        }
+                vec3(0.0, -1.0, 0.0));
 
         if (RayDirection.y < 0.0)
-        {
             tDeltaY = intersectRayPlane(
                 vec3(RayOrigin, 0.0),
                 vec3(RayDirection, 0.0),
                 vec3(0.0, A.y * GRID_SIZE - 1.0, 0.0),
-                vec3(0.0, 1.0, 0.0)
-            );
-        }
+                vec3(0.0, 1.0, 0.0));
+
+        vec2 maxX = RayOrigin + RayDirection * tMaxX;
+        if (distance(gridUVs, maxX) < 0.1)
+            gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+
+        vec2 maxY = RayOrigin + RayDirection * tMaxY;
+        if (distance(gridUVs, maxY) < 0.1)
+            gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);
+
+        vec2 deltaX = RayOrigin + RayDirection * tDeltaX;
+        if (distance(gridUVs, deltaX) < 0.1)
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+
         vec2 deltaY = RayOrigin + RayDirection * tDeltaY;
         if (distance(gridUVs, deltaY) < 0.1)
-        {
             gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        }
 
         //////////////////////////////////////////////////////////
         // ITERATION PHASE
@@ -206,16 +160,10 @@ var fragSource = `
 
             vec2 maxX = RayOrigin + RayDirection * tMaxX;
             if (distance(gridUVs, maxX) < 0.1)
-            {
                 gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
-            }
             vec2 maxY = RayOrigin + RayDirection * tMaxY;
             if (distance(gridUVs, maxY) < 0.1)
-            {
                 gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);
-            }
-
-
         }
 
         // DRAW RAY
@@ -223,16 +171,5 @@ var fragSource = `
         float dist = distancePointToLine(RayOrigin + RayDirection * -1000.0, RayOrigin + RayDirection * 1000.0, gridUVs);
         if (dist < thickness) 
             gl_FragColor = vec4(mix(gl_FragColor.xyz, vec3(1.0), clamp(1.0 - (dist / thickness), 0.0, 1.0)), 1.0);
-
-        //vec2 deltaX = RayOrigin + RayDirection * tDeltaX;
-        //if (distance(uvs, deltaX) < 0.01)
-        //{
-        //    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        //}
-        //vec2 deltaY = RayOrigin + RayDirection * tDeltaY;
-        //if (distance(uvs, deltaX) < 0.01)
-        //{
-        //    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        //}
     }
     `;
